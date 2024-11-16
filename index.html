@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Game</title>
+</head>
+<body>
+  <h1>Socket.IO Moving Dots</h1>
+  <canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script>
+    // Establish socket connection
+    var socket = io();
+
+    // Listen for connection success
+    socket.on('connect', function () {
+      console.log('Socket connected successfully with ID:', socket.id);
+    });
+
+    // Handle disconnection
+    socket.on('disconnect', function () {
+      console.log('Socket disconnected.');
+    });
+
+    // Setup canvas
+    var ctx = document.getElementById("ctx").getContext("2d");
+    ctx.font = '30px Arial';
+
+    // Listen for new positions from the server
+    socket.on('newPositions', function (data) {
+      ctx.clearRect(0, 0, 500, 500); // Clear the canvas before re-drawing
+      for (var i = 0; i < data.length; i++) {
+        ctx.fillText(data[i].number, data[i].x, data[i].y);
+      }
+    });
+  </script>
+</body>
+</html>
